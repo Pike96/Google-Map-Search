@@ -30,3 +30,11 @@ a {
 .btn:hover {
   cursor: pointer;
 }
+
+.form-check-label {
+  padding-left: 20px;
+}
+
+#form :valid {
+  border-color: #ccc;
+}
