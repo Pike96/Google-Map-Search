@@ -1,9 +1,9 @@
-var express = require('express');
-var router = express.Router();
-var path = require('path');
-var fetch = require('node-fetch');
+const express = require('express');
+const router = express.Router();
+const path = require('path');
+const fetch = require('node-fetch');
 
-const API_KEY = "AIzaSyBWLwczT5BH7NFLvRpY29gHh7ICczuw6DY";
+const API_KEY = "AIzaSyDf2PYwxk-hPRw0ZQDIO0TamURG3zkYX38";
 
 /* GET home page. */
 router.get('/', function(req, res, next) {

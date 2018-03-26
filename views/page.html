@@ -1,110 +1,114 @@
 <!doctype html>
 <html lang="en" ng-app="mapApp">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>HW8-MapApp</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
-          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
-    <link rel="stylesheet" href="stylesheets/style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>HW8-MapApp</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="stylesheets/style.css">
 
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular-animate.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular-animate.js"></script>
 
 </head>
-<body ng-controller="FormCtrl" >
+<body ng-controller="FormCtrl">
 
 <form id="myForm" name="myForm" ng-submit="submitForm()">
-    <div class="card col-md-8 offset-md-2 col-12" id="searchbox">
-        <h4>Travel and Entertainment Search</h4>
-        <div class="row">
-            <div class="col-md-2 offset-md-2">Keyword<span style="color:red">*</span></div>
-            <div class="col-md-6">
-                <input type="text" class="form-control autocomplete" pattern=".*\S.*" placeholder=""
-                       ng-required="true" ng-model="keyword">
-                <div class="invalid-feedback">Please enter a keyword.</div>
-            </div>
+  <div class="card col-md-8 offset-md-2 col-12" id="searchbox">
+    <h4>Travel and Entertainment Search</h4>
+    <div class="row">
+      <div class="col-md-2 offset-md-2">Keyword<span style="color:red">*</span></div>
+      <div class="col-md-6">
+        <input type="text" id="keyword" class="form-control" pattern=".*\S.*" placeholder=""
+               ng-required="true" ng-model="keyword">
+        <div class="invalid-feedback">Please enter a keyword.</div>
+      </div>
 
-            <div class="col-md-2 offset-md-2">Category</div>
-            <div class="col-md-6">
-                <select class="form-control" id="category" name="category" ng-model="category">
-                    <option value="default">Default</option>
-                    <option value="airport">Airport</option>
-                    <option value="amusement_park">Amusement Park</option>
-                    <option value="aquarium">Aquarium</option>
-                    <option value="art_gallery">Art Gallery</option>
-                    <option value="bakery">Bakery</option>
-                    <option value="bar">Bar</option>
-                    <option value="beauty_salon">Beauty Salon</option>
-                    <option value="bowling_alley">Bowling Alley</option>
-                    <option value="bus_station">Bus Station</option>
-                    <option value="cafe">Cafe</option>
-                    <option value="campground">Campground</option>
-                    <option value="car_rental">Car Rental</option>
-                    <option value="casino">Casino</option>
-                    <option value="lodging">Lodging</option>
-                    <option value="movie_theater">Movie Theater</option>
-                    <option value="museum">Museum</option>
-                    <option value="night_club">Night Club</option>
-                    <option value="park">Park</option>
-                    <option value="parking">Parking</option>
-                    <option value="restaurant">Restaurant</option>
-                    <option value="shopping_mall">Shopping Mall</option>
-                    <option value="stadium">Stadium</option>
-                    <option value="subway_station">Subway Station</option>
-                    <option value="taxi_stand">Taxi Stand</option>
-                    <option value="train_station">Train Station</option>
-                    <option value="transit_station">Transit Station</option>
-                    <option value="travel_agency">Travel Agency</option>
-                    <option value="zoo">Zoo</option>
-                </select>
-            </div>
+      <div class="col-md-2 offset-md-2">Category</div>
+      <div class="col-md-6">
+        <select class="form-control" id="category" name="category" ng-model="category">
+          <option value="default">Default</option>
+          <option value="airport">Airport</option>
+          <option value="amusement_park">Amusement Park</option>
+          <option value="aquarium">Aquarium</option>
+          <option value="art_gallery">Art Gallery</option>
+          <option value="bakery">Bakery</option>
+          <option value="bar">Bar</option>
+          <option value="beauty_salon">Beauty Salon</option>
+          <option value="bowling_alley">Bowling Alley</option>
+          <option value="bus_station">Bus Station</option>
+          <option value="cafe">Cafe</option>
+          <option value="campground">Campground</option>
+          <option value="car_rental">Car Rental</option>
+          <option value="casino">Casino</option>
+          <option value="lodging">Lodging</option>
+          <option value="movie_theater">Movie Theater</option>
+          <option value="museum">Museum</option>
+          <option value="night_club">Night Club</option>
+          <option value="park">Park</option>
+          <option value="parking">Parking</option>
+          <option value="restaurant">Restaurant</option>
+          <option value="shopping_mall">Shopping Mall</option>
+          <option value="stadium">Stadium</option>
+          <option value="subway_station">Subway Station</option>
+          <option value="taxi_stand">Taxi Stand</option>
+          <option value="train_station">Train Station</option>
+          <option value="transit_station">Transit Station</option>
+          <option value="travel_agency">Travel Agency</option>
+          <option value="zoo">Zoo</option>
+        </select>
+      </div>
 
-            <div class="col-md-2 offset-md-2" id="test">Distance (miles)</div>
-            <div class="col-md-6"><input type="text" class="form-control" placeholder="10" ng-model="distance"></div>
+      <div class="col-md-2 offset-md-2" id="test">Distance (miles)</div>
+      <div class="col-md-6"><input type="text" class="form-control" placeholder="10" ng-model="distance"></div>
 
-            <div class="col-md-2 offset-md-2" ng-click="checkForm()" >From<span style="color:red">*</span></div>
-            <div class="col-md-6 form-check">
-                <label class="form-check-label">
-                    <input type="radio" class="form-check-input" ng-model="from" name="fromradio" id="from1" value="here">
-                    Current location
-                </label>
-                <br>
-                <label class="form-check-label" style="width: 100%">
-                    <input type="radio" class="form-check-input" ng-model="from" name="fromradio" id="from2" value="other">
-                    Other. Please specify:
-                    <input type="text" id="loc" name="loc" class="form-control autocomplete" placeholder="Enter a location"
-                           ng-model="loc" ng-disabled="fromwhere('here')" ng-required="fromwhere('other')">
-                </label>
-            </div>
+      <div class="col-md-2 offset-md-2" ng-click="checkForm()">From<span style="color:red">*</span></div>
+      <div class="col-md-6 form-check">
+        <label class="form-check-label">
+          <input type="radio" class="form-check-input" ng-model="from" name="fromradio" id="from1" value="here">
+          Current location
+        </label>
+        <br>
+        <label class="form-check-label" style="width: 100%">
+          <input type="radio" class="form-check-input" ng-model="from" name="fromradio" id="from2" value="other">
+          Other. Please specify:
+          <input type="text" id="loc" name="loc" class="form-control" placeholder="Enter a location"
+                 ng-model="loc" ng-disabled="fromwhere('here')" ng-required="fromwhere('other')">
+        </label>
+      </div>
 
-            <div class="col-md-6 offset-md-2">
-                <button class="btn btn-primary" id="search" type="submit" ng-disabled="myForm.$invalid">
-                    <i class="fa fa-search" aria-hidden="true"></i> Search
-                </button>
-                <button class="btn">Clear</button>
-            </div>
-        </div>
+      <div class="col-md-6 offset-md-2">
+        <button class="btn btn-primary" id="search" type="submit" ng-disabled="myForm.$invalid">
+          <i class="fa fa-search" aria-hidden="true"></i> Search
+        </button>
+        <button class="btn">Clear</button>
+      </div>
     </div>
+  </div>
 </form>
 
 
 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
-        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
-        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
-        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
 
 <script src="javascripts/page.js"></script>
 
 <!--<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDf2PYwxk-hPRw0ZQDIO0TamURG3zkYX38&libraries=places&callback=initMap"-->
-        <!--async defer></script>-->
+<!--async defer></script>-->
 
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDf2PYwxk-hPRw0ZQDIO0TamURG3zkYX38&v=3.exp&libraries=places"></script>
+<script
+  src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDf2PYwxk-hPRw0ZQDIO0TamURG3zkYX38&v=3.exp&libraries=places"></script>
 
 </body>
 </html>
