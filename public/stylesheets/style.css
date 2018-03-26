@@ -35,6 +35,6 @@ a {
   padding-left: 20px;
 }
 
-#form :valid {
+#myForm :valid {
   border-color: #ccc;
 }
