@@ -7,10 +7,6 @@ app.controller('FormCtrl', function ($scope) {
   $scope.from = 'here';
   $scope.category = 'default';
 
-  $scope.checkForm = function () {
-
-  };
-
   $scope.fromwhere = function(index) {
     return index === $scope.from;
   };
@@ -18,15 +14,7 @@ app.controller('FormCtrl', function ($scope) {
   $scope.submitForm = function () {
 
   }
-  // $scope.radiohandler = function () {
-  //   if ($('input:checked').val() === "here") {
-  //     document.getElementById("loc").required = false;
-  //     document.getElementById("loc").disabled = true;
-  //   } else {
-  //     document.getElementById("loc").required = true;
-  //     document.getElementById("loc").disabled = false;
-  //   }
-  // };
+
 });
 
 (function() {
@@ -44,17 +32,16 @@ app.controller('FormCtrl', function ($scope) {
       }
       form.classList.add('was-validated');
     });
-    // document.getElementById("test").addEventListener('click', function(event) {
-    //
-    // }, false);
 
-    // document.addEventListener('keyup', function(event) {
-    //   if (form.checkValidity() === false) {
-    //     $('#search').prop('disabled', true);
-    //   } else {
-    //     $('#search').prop('disabled', false);
-    //   }
-    // });
+    var autocompleteKeyword = new google.maps.places.Autocomplete(
+      (document.getElementsByClassName('autocomplete')[0]),
+      {types: ['geocode']});
+    google.maps.event.addListener(autocompleteKeyword, 'place_changed', function () {});
+
+    var autocompleteLoc = new google.maps.places.Autocomplete(
+      (document.getElementsByClassName('autocomplete')[1]),
+      {types: ['geocode']});
+    google.maps.event.addListener(autocompleteLoc, 'place_changed', function () {});
 
   }, false);
 })();

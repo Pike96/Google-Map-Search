@@ -23,8 +23,8 @@
         <div class="row">
             <div class="col-md-2 offset-md-2">Keyword<span style="color:red">*</span></div>
             <div class="col-md-6">
-                <input type="text" class="form-control" id="validation1" pattern=".*\S.*"
-                       ng-required="true" ng-model="keyword" ng-change="checkForm()">
+                <input type="text" class="form-control autocomplete" pattern=".*\S.*" placeholder=""
+                       ng-required="true" ng-model="keyword">
                 <div class="invalid-feedback">Please enter a keyword.</div>
             </div>
 
@@ -76,7 +76,7 @@
                 <label class="form-check-label" style="width: 100%">
                     <input type="radio" class="form-check-input" ng-model="from" name="fromradio" id="from2" value="other">
                     Other. Please specify:
-                    <input type="text" id="loc" name="loc" class="form-control" placeholder="Enter a location"
+                    <input type="text" id="loc" name="loc" class="form-control autocomplete" placeholder="Enter a location"
                            ng-model="loc" ng-disabled="fromwhere('here')" ng-required="fromwhere('other')">
                 </label>
             </div>
@@ -100,6 +100,11 @@
         integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 
 <script src="javascripts/page.js"></script>
+
+<!--<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDf2PYwxk-hPRw0ZQDIO0TamURG3zkYX38&libraries=places&callback=initMap"-->
+        <!--async defer></script>-->
+
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDf2PYwxk-hPRw0ZQDIO0TamURG3zkYX38&v=3.exp&libraries=places"></script>
 
 </body>
 </html>
