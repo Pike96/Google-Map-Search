@@ -1,8 +1,32 @@
 body {
-  padding: 50px;
-  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+  padding: 10px;
+  /*font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;*/
+  vertical-align: center;
 }
 
 a {
   color: #00B7FF;
+}
+
+#searchbox {
+  background-color: #f1f1f1;
+}
+
+#searchbox h4 {
+  margin: 20px 10px;
+  text-align: center;
+}
+
+.col-md-2 {
+  padding-top: 17px;
+  padding-left: 20px;
+  margin-bottom: 0;
+}
+
+.col-md-6 {
+  padding: 10px 20px 15px 20px;
+}
+
+.btn:hover {
+  cursor: pointer;
 }
