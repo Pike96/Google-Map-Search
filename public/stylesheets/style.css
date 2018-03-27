@@ -72,3 +72,33 @@ a {
 .btn-default:disabled {
   border: 1px solid #ccc;
 }
+
+#list {
+  -moz-transition: all linear 0.3s;
+  -ms-transition: all linear 0.3s;
+  -o-transition: all linear 0.3s;
+  position: absolute;
+
+  -webkit-transition: all linear 0.3s;
+  transition:all linear 0.3s;
+}
+
+#list.ng-hide {
+  opacity: 100;
+  transform: translateX(-100%);
+}
+
+#details {
+  -moz-transition: all linear 0.3s;
+  -ms-transition: all linear 0.3s;
+  -o-transition: all linear 0.3s;
+
+  position: absolute;
+  -webkit-transition:all linear 0.3s;
+  transition:all linear 0.3s;
+}
+
+#details.ng-hide {
+  transform: translateX(100%);
+  opacity: 100;
+}

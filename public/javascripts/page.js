@@ -3,14 +3,10 @@
 const DOMAIN = 'http://localhost:31322';
 const API_KEY = 'AIzaSyDf2PYwxk-hPRw0ZQDIO0TamURG3zkYX38';
 
-let app = angular.module('mapApp', []);
+let app = angular.module('mapApp', ['ngAnimate']);
 
 app.controller('FormCtrl', ($scope) => {
-  $scope.from = 'here';
-  $scope.category = 'default';
-
   $scope.restabledata = [];
-  $scope.hasnextpage = false;
 
   $scope.fromwhere = (index) => {
     return index === $scope.from;
@@ -104,6 +100,10 @@ app.controller('FormCtrl', ($scope) => {
     $scope.$apply();
   }
 
+  $scope.getdetails = (placeid) => {
+    $scope.displaydetails = true;
+    $scope.placeid = placeid;
+  }
 
 });
 

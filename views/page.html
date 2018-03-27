@@ -30,7 +30,7 @@
 
       <div class="col-md-2 offset-md-2">Category</div>
       <div class="col-md-6">
-        <select class="form-control" id="category" name="category" ng-model="category">
+        <select class="form-control" id="category" name="category" ng-init="category='default'" ng-model="category">
           <option value="default">Default</option>
           <option value="airport">Airport</option>
           <option value="amusement_park">Amusement Park</option>
@@ -69,7 +69,7 @@
       </div>
 
       <div class="col-md-2 offset-md-2">From<span style="color:red">*</span></div>
-      <div class="col-md-6 form-check">
+      <div class="col-md-6 form-check" ng-init="from='here'">
         <label class="form-check-label">
           <input type="radio" class="form-check-input" ng-model="from" name="fromradio" id="from1" value="here">
           Current location
@@ -110,36 +110,48 @@
   <div id="container" ng-init="showall=false" ng-model="showall" ng-show="showall">
 
     <div id="respanel" class="panel" ng-show="topnavtab==1&&restabledata.length!=0">
-      <button class="btn btn-default float-right" id="gotodetails"
-              ng-init="hasdetails=false" ng-model="hasdetails" ng-disabled="!hasdetails">
-        Details <i class="fa fa-chevron-right" aria-hidden="true"></i>
-      </button>
+      <div id="list" class="container" ng-animate="'animate'" ng-hide="displaydetails">
+        <button class="btn btn-default float-right" id="gotodetails"
+                ng-disabled="placeid===undefined" ng-click="getdetails(placeid)">
+          Details <i class="fa fa-chevron-right" aria-hidden="true"></i>
+        </button>
 
-      <table id="restable" class="table table-striped" ng-init="pagenum=1" ng-model="pagenum">
-        <tr>
-          <th style="width: 50px;">#</th>
-          <th style="width: 100px;">Category</th>
-          <th style="width: 500px;">Name</th>
-          <th style="width: 500px;">Address</th>
-          <th style="width: 100px;">Favorite</th>
-          <th style="width: 100px;">Details</th>
-        </tr>
-        <tr ng-repeat="data in restabledata[pagenum-1]">
-          <td style="width: 50px;">{{$index+1}}</td>
-          <td style="width: 100px;"><img src="{{data.icon}}" height="36px" width="36px" style="margin:0;"></td>
-          <td style="width: 500px;">{{data.name}}</td>
-          <td style="width: 500px;">{{data.vicinity}}</td>
-          <td style="width: 100px;">
-            <button class="btn btn-default"><i class="fa fa-star-o" aria-hidden="true"></i></button>
-          </td>
-          <td style="width: 100px;">
-            <button class="btn btn-default"><i class="fa fa-chevron-right" aria-hidden="true"></i></button>
-          </td>
-        </tr>
-      </table>
-      <div id="pagehelper">
-        <button class="btn btn-default" ng-show="pagenum!=1" ng-click="prev()">Previous</button>
-        <button class="btn btn-default" ng-show="restabledata[pagenum-1].hasnextpage" ng-click="next()">Next</button>
+        <table id="restable" class="table table-striped" ng-init="pagenum=1" ng-model="pagenum">
+          <tr>
+            <th style="width: 50px;">#</th>
+            <th style="width: 100px;">Category</th>
+            <th style="width: 500px;">Name</th>
+            <th style="width: 500px;">Address</th>
+            <th style="width: 100px;">Favorite</th>
+            <th style="width: 100px;">Details</th>
+          </tr>
+          <tr ng-repeat="data in restabledata[pagenum-1]">
+            <td style="width: 50px;">{{$index+1}}</td>
+            <td style="width: 100px;"><img src="{{data.icon}}" height="36px" width="36px" style="margin:0;"></td>
+            <td style="width: 500px;">{{data.name}}</td>
+            <td style="width: 500px;">{{data.vicinity}}</td>
+            <td style="width: 100px;">
+              <button class="btn btn-default"><i class="fa fa-star-o" aria-hidden="true"></i></button>
+            </td>
+            <td style="width: 100px;">
+              <button class="btn btn-default" ng-click="getdetails(data.place_id)">
+                <i class="fa fa-chevron-right" aria-hidden="true"></i>
+              </button>
+            </td>
+          </tr>
+        </table>
+        <div id="pagehelper">
+          <button class="btn btn-default" ng-show="pagenum!=1" ng-click="prev()">Previous</button>
+          <button class="btn btn-default" ng-show="restabledata[pagenum-1].hasnextpage" ng-click="next()">Next</button>
+        </div>
+      </div>
+
+      <div id="details" class="container" ng-animate="'animate'" ng-hide="!displaydetails">
+        <button class="btn btn-default" ng-click="displaydetails=false">
+          <i class="fa fa-chevron-left" aria-hidden="true"></i> List
+        </button>
+
+        <!--Details info goes here-->
       </div>
     </div>
 
