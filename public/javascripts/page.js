@@ -6,10 +6,11 @@ const API_KEY = 'AIzaSyDf2PYwxk-hPRw0ZQDIO0TamURG3zkYX38';
 let app = angular.module('mapApp', []);
 
 app.controller('FormCtrl', ($scope) => {
-  $('#search').prop('disabled', true);
   $scope.from = 'here';
   $scope.category = 'default';
-  $scope.apikey = API_KEY;
+
+  $scope.restabledata = [];
+  $scope.hasnextpage = false;
 
   $scope.fromwhere = (index) => {
     return index === $scope.from;
@@ -21,9 +22,15 @@ app.controller('FormCtrl', ($scope) => {
     $('#distance').val('');
     $('#loc').val('');
     $scope.from = 'here';
+    $scope.topnavtab = 1;
+    $scope.showall = false;
+    $scope.restabledata = [];
   };
 
   $scope.submitForm = () => {
+    $scope.restabledata = [];
+    $scope.showall = true;
+    $scope.showprogress = true;
     let keyword = $('#keyword').val().split(' ').join('+');
     let category = $scope.category;
     let distance = $scope.distance === undefined ? 10 : $scope.distance;
@@ -35,6 +42,8 @@ app.controller('FormCtrl', ($scope) => {
         .then(json => {
           lat = json.lat;
           lon = json.lon;
+          $scope.showprogress = false;
+          $scope.topnavtab = 1;
           $scope.apisearch(keyword, category, distance, lat, lon);
         });
 
@@ -56,9 +65,45 @@ app.controller('FormCtrl', ($scope) => {
       + '&distance=' + distance + '&lat=' + lat + '&lon=' + lon)
       .then(resp => resp.json())
       .then(json => {
-        console.log(json);
+        $scope.pagenum = 1;
+        if (json.next_page_token !== undefined) {
+          $scope.nextpagetoken = json.next_page_token;
+          json.results.hasnextpage = true;
+        }
+        $scope.restabledata.push(json.results);
+
+        $scope.showprogress = false;
+        $scope.showrestable = true;
+        $scope.topnavtab = 1;
+        setInterval($scope.$apply(), 1000);
       });
   };
+
+  $scope.next = () => {
+    if ($scope.restabledata[$scope.pagenum + 1] !== undefined) {
+      $scope.pagenum++;
+      $scope.$apply();
+    }
+    fetch(DOMAIN + '/nextpage?pagetoken=' + $scope.nextpagetoken)
+      .then(resp => resp.json())
+      .then(json => {
+        $scope.pagenum++;
+        if (json.next_page_token !== undefined) {
+          $scope.nextpagetoken = json.next_page_token;
+          json.results.hasnextpage = true;
+        } else {
+          json.results.hasnextpage = false;
+        }
+        $scope.restabledata.push(json.results);
+        $scope.$apply();
+      });
+  }
+
+  $scope.prev = () => {
+    $scope.pagenum--;
+    $scope.$apply();
+  }
+
 
 });
 

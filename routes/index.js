@@ -37,6 +37,17 @@ router.get('/list', function (req, res) {
   });
 });
 
+router.get('/nextpage', function (req, res) {
+  let url = 'https://maps.googleapis.com/maps/api/place/nearbysearch/json?pagetoken='
+    + req.query.pagetoken + '&key=' + API_KEY;
+  fetch(url)
+    .then(resp => resp.json())
+    .then(json => {
+      console.log(url);
+      res.send(json);
+    });
+});
+
 router.get('/details', function (req, res) {
   fetch('https://maps.googleapis.com/maps/api/place/details/json?placeid=' + req.query.placeid + '&key=' + API_KEY)
     .then(resp => resp.json())

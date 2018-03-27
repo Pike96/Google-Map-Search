@@ -38,3 +38,37 @@ a {
 #myForm :valid {
   border-color: #ccc;
 }
+
+#topnav, #pagehelper {
+  width: 190px;
+  margin: 20px auto;
+}
+
+.progress {
+  margin: 100px auto;
+  width: 75%;
+}
+
+#container {
+  margin: auto;
+  width: 1250px;
+}
+
+#restable th {
+  background-color: white;
+}
+
+#restable td {
+  background-color: white;
+}
+
+#restable tr:hover td {
+  background-color: #cccccc;
+}
+#gotodetails {
+  margin: 10px 0;
+}
+
+.btn-default:disabled {
+  border: 1px solid #ccc;
+}
