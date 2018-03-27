@@ -23,7 +23,7 @@
     <div class="row">
       <div class="col-md-2 offset-md-2">Keyword<span style="color:red">*</span></div>
       <div class="col-md-6">
-        <input type="text" id="keyword" class="form-control" pattern=".*\S.*" placeholder=""
+        <input type="text" id="keyword" name="keyword" class="form-control" pattern=".*\S.*" placeholder=""
                ng-required="true" ng-model="keyword">
         <div class="invalid-feedback">Please enter a keyword.</div>
       </div>
@@ -64,9 +64,11 @@
       </div>
 
       <div class="col-md-2 offset-md-2" id="test">Distance (miles)</div>
-      <div class="col-md-6"><input type="text" class="form-control" placeholder="10" ng-model="distance"></div>
+      <div class="col-md-6">
+        <input type="text" name="distance" id="distance" class="form-control" placeholder="10" ng-model="distance">
+      </div>
 
-      <div class="col-md-2 offset-md-2" ng-click="checkForm()">From<span style="color:red">*</span></div>
+      <div class="col-md-2 offset-md-2">From<span style="color:red">*</span></div>
       <div class="col-md-6 form-check">
         <label class="form-check-label">
           <input type="radio" class="form-check-input" ng-model="from" name="fromradio" id="from1" value="here">
@@ -85,7 +87,7 @@
         <button class="btn btn-primary" id="search" type="submit" ng-disabled="myForm.$invalid">
           <i class="fa fa-search" aria-hidden="true"></i> Search
         </button>
-        <button class="btn">Clear</button>
+        <button class="btn" ng-click="clearhandler()">Clear</button>
       </div>
     </div>
   </div>

@@ -15,6 +15,14 @@ app.controller('FormCtrl', ($scope) => {
     return index === $scope.from;
   };
 
+  $scope.clearhandler = () => {
+    $('#keyword').val('');
+    $('#category').val('default');
+    $('#distance').val('');
+    $('#loc').val('');
+    $scope.from = 'here';
+  };
+
   $scope.submitForm = () => {
     let keyword = $('#keyword').val().split(' ').join('+');
     let category = $scope.category;
