@@ -39,7 +39,7 @@ a {
   border-color: #ccc;
 }
 
-#topnav, #pagehelper {
+#topnav {
   width: 190px;
   margin: 20px auto;
 }
@@ -101,4 +101,25 @@ a {
 #details.ng-hide {
   transform: translateX(100%);
   opacity: 100;
+}
+
+#pagehelper {
+  margin: 20px auto;
+  width: 300px;
+  text-align: center;
+}
+
+.pagebutton {
+  padding: 8px 16px;
+  display: inline-block;
+  border-radius: 5px;
+  color: black;
+  border: 2px solid #aaa;
+  width: 100px;
+  margin: auto 20px;
+}
+
+.pagebutton:hover {
+  color: black;
+  text-decoration: none;
 }

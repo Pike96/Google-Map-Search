@@ -32,7 +32,6 @@ router.get('/list', function (req, res) {
   fetch(url)
     .then(resp => resp.json())
     .then(json => {
-      console.log(url);
       res.send(json);
   });
 });
@@ -43,7 +42,6 @@ router.get('/nextpage', function (req, res) {
   fetch(url)
     .then(resp => resp.json())
     .then(json => {
-      console.log(url);
       res.send(json);
     });
 });
