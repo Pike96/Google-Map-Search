@@ -6,8 +6,6 @@ const API_KEY = 'AIzaSyDf2PYwxk-hPRw0ZQDIO0TamURG3zkYX38';
 let app = angular.module('mapApp', ['ngAnimate']);
 
 app.controller('FormCtrl', ['$scope', '$window', ($scope, $window) => {
-  $scope.restabledata = [];
-
   $scope.fromwhere = (index) => {
     return index === $scope.from;
   };
@@ -121,7 +119,30 @@ app.controller('FormCtrl', ['$scope', '$window', ($scope, $window) => {
     let service = new google.maps.places.PlacesService($scope.map);
     service.getDetails({placeId: placeid}, (place, status) => {
       if (status === google.maps.places.PlacesServiceStatus.OK) {
-        console.log(place);
+        $scope.detailsdata = place;
+        if ($scope.detailsdata.price_level !== undefined) {
+          $scope.detailsdata.price_level = Array($scope.detailsdata.price_level + 1).join('$');
+        }
+        if ($scope.detailsdata.opening_hours !== undefined) {
+          let str = '';
+          let d = new Date();
+          let i = d.getDay();
+          if (i === 0){
+            i = 6;
+          } else {
+            i--;
+          }
+          $scope.todayindex = i;
+          if ($scope.detailsdata.opening_hours.open_now) {
+            str = $scope.detailsdata.opening_hours.weekday_text[i];
+            str = str.replace(/.*day/g, 'Open now');
+          } else {
+            str = 'Closed';
+          }
+
+          $scope.detailsdata.todayhrs = str;
+        }
+        $scope.$apply();
       }
     });
   };

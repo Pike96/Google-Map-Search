@@ -115,7 +115,8 @@
     <div class="alert alert-warning" ng-init="nolist=false" ng-model="nolist" ng-show="nolist">No records</div>
 
     <!--Results-->
-    <div id="respanel" class="panel" ng-show="topnavtab==1 && restabledata.length!=0 && !nolist">
+    <div id="respanel" class="panel"
+         ng-init="restabledata=[]" ng-model="restabledata" ng-show="topnavtab==1 && restabledata.length!=0 && !nolist">
       <!--List-->
       <div id="list" ng-animate="'animate'" ng-hide="displaydetails">
         <button class="btn btn-default float-right" id="gotodetails"
@@ -154,7 +155,8 @@
       </div>
 
       <!--Details-->
-      <div id="details" class="container" ng-animate="'animate'" ng-hide="!displaydetails">
+      <div id="details" class="container"
+           ng-init="detailsdata=[]" ng-model="detailsdata" ng-animate="'animate'" ng-hide="!displaydetails">
         <button class="btn btn-default" ng-click="displaydetails=false">
           <i class="fa fa-chevron-left" aria-hidden="true"></i> List
         </button>
@@ -179,7 +181,44 @@
         </ul>
 
         <div id="infopanel" class="panel" ng-show="detailsnavtab==1">
-          infopanel
+          <table style="margin-top: 20px;" class="table table-striped"><tbody>
+            <tr ng-if="detailsdata.formatted_address !== undefined">
+              <th>Address</th>
+              <td>{{detailsdata.formatted_address}}</td>
+            </tr>
+            <tr ng-if="detailsdata.international_phone_number !== undefined">
+              <th>Phone number</th>
+              <td>{{detailsdata.international_phone_number}}</td>
+            </tr>
+            <tr ng-if="detailsdata.price_level !== undefined">
+              <th>Price Level</th>
+              <td>{{detailsdata.price_level}}</td>
+            </tr>
+            <tr ng-if="detailsdata.rating !== undefined">
+              <th>Rating</th>
+              <td>{{detailsdata.rating}}&nbsp;
+                <div class="ratings">
+                  <div class="empty-stars"></div>
+                  <div class="full-stars" style="width:{{detailsdata.rating / 5 * 100}}%"></div>
+                </div>
+              </td>
+            </tr>
+            <tr ng-if="detailsdata.url !== undefined">
+              <th>Google Page</th>
+              <td><a target="_blank" href="{{detailsdata.url}}">{{detailsdata.url}}</a></td>
+            </tr>
+            <tr ng-if="detailsdata.website !== undefined">
+              <th>Website</th>
+              <td><a target="_blank" href="{{detailsdata.website}}">{{detailsdata.website}}</a></td>
+            </tr>
+            <tr ng-if="detailsdata.opening_hours !== undefined">
+              <th>Hours</th>
+              <td>
+                {{detailsdata.todayhrs}}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <a href="#" data-toggle="modal" data-target="#exampleModalCenter">Daily open hours</a>
+              </td>
+            </tr>
+          </tbody></table>
         </div>
         <div id="photospanel" class="panel" ng-show="detailsnavtab==2">
           photospanel
@@ -191,7 +230,38 @@
           reviewspanel
         </div>
 
+        <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog"
+             aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+          <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Open hours</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                <table class="table">
+                  <tr ng-repeat="data in detailsdata.opening_hours.weekday_text">
+                    <td ng-if="todayindex != $index">{{data.split(': ')[0]}}</td>
+                    <td ng-if="todayindex != $index">{{data.split(': ')[1]}}</td>
+
+                    <th ng-if="todayindex == $index">{{data.split(': ')[0]}}</th>
+                    <th ng-if="todayindex == $index">{{data.split(': ')[1]}}</th>
+                  </tr>
+                </table>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
       </div>
+
+
+
     </div>
 
     <div id="favpanel" class="panel" ng-show="topnavtab==2">

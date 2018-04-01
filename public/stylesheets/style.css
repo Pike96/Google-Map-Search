@@ -123,3 +123,23 @@ a {
   color: black;
   text-decoration: none;
 }
+
+.ratings {
+  position: relative;
+  vertical-align: middle;
+  display: inline-block;
+  color: white;
+  overflow: hidden;
+}
+.full-stars {
+  position: absolute;
+  left: 0;
+  top: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  color: #ffa10d;
+}
+.empty-stars:before, .full-stars:before {
+  content:"\2605\2605\2605\2605\2605";
+  font-size: 14pt;
+}
