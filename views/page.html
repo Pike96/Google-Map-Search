@@ -226,10 +226,13 @@
           </tbody></table>
         </div>
         <div id="photospanel" class="" ng-show="detailsnavtab==2">
-          <div class="photoanchor" ng-repeat="data in photodata">
-            <a target="_blank" href="{{data}}">
-              <img class="img-thumbnail" src="{{data}}">
-            </a>
+          <div class="alert alert-warning" ng-init="nophoto=false" ng-model="nophoto" ng-show="nophoto">No records</div>
+          <div id="photoscontainer">
+            <div class="photoanchor" ng-repeat="data in photodata">
+              <a target="_blank" href="{{data}}">
+                <img class="img-thumbnail" src="{{data}}">
+              </a>
+            </div>
           </div>
         </div>
         <div id="mappanel" class="panel" ng-show="detailsnavtab==3">
@@ -255,12 +258,19 @@
             </div>
           </div>
 
-          <div id="map" style="height: 390px; margin: 20px 0;"></div>
+          <button id="panobutton" class="btn btn-default"
+                  ng-model="panostate" ng-init="panostate=false" ng-click="panohandler()">
+            <img style="height:50px;" src="http://cs-server.usc.edu:45678/hw/hw8/images/Pegman.png" ng-if="!panostate">
+            <img style="height:50px;" src="http://cs-server.usc.edu:45678/hw/hw8/images/Map.png" ng-if="panostate">
+          </button>
 
-          <div id="routeinfo"></div>
+          <div id="map" style="height: 390px; margin: 10px 0;"></div>
+
+          <div id="routeinfo" ng-init="showrouteinfo=false" ng-show="showrouteinfo" ng-model="showrouteinfo"></div>
         </div>
         <div id="reviewspanel" class="panel" ng-show="detailsnavtab==4">
-          reviewspanel
+          <div class="alert alert-warning" ng-init="nogoogle=false" ng-model="nogoogle" ng-show="nogoogle">No records</div>
+          <div class="alert alert-warning" ng-init="noyelp=false" ng-model="noyelp" ng-show="noyelp">No records</div>
         </div>
 
         <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog"

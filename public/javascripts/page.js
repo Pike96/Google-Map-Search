@@ -6,6 +6,16 @@ const API_KEY = 'AIzaSyDf2PYwxk-hPRw0ZQDIO0TamURG3zkYX38';
 let app = angular.module('mapApp', ['ngAnimate']);
 
 app.controller('FormCtrl', ['$scope', '$window', ($scope, $window) => {
+  $scope.map = new google.maps.Map(document.getElementById('map'), {
+    center: {lat: -33.866, lng: 151.196},
+    zoom: 15
+  });
+  $scope.directionsService = new google.maps.DirectionsService;
+  $scope.directionsDisplay = new google.maps.DirectionsRenderer({
+    map: $scope.map,
+    panel: document.getElementById('routeinfo')
+  });
+
   $scope.fromwhere = (index) => {
     return index === $scope.from;
   };
@@ -116,19 +126,20 @@ app.controller('FormCtrl', ['$scope', '$window', ($scope, $window) => {
     $scope.displaydetails = true;
     $scope.placeid = placeid;
     $window.placeid = placeid;
+    $scope.showrouteinfo = false;
 
-    let map = new google.maps.Map(document.getElementById('map'), {
-      center: {lat: -33.866, lng: 151.196},
-      zoom: 15
-    });
-
-    let service = new google.maps.places.PlacesService(map);
+    let service = new google.maps.places.PlacesService($scope.map);
     service.getDetails({placeId: placeid}, (place, status) => {
       if (status === google.maps.places.PlacesServiceStatus.OK) {
         $scope.detailsdata = place;
         $scope.photodata = [];
-        for (let i = 0; i < place.photos.length; i++) {
-          $scope.photodata.push(place.photos[i].getUrl({'maxWidth': 2000}));
+        if (place.photos === undefined || place.photos.length === 0) {
+          $scope.nophoto = true;
+        } else {
+          $scope.nophoto = false;
+          for (let i = 0; i < place.photos.length; i++) {
+            $scope.photodata.push(place.photos[i].getUrl({'maxWidth': 2000}));
+          }
         }
         if ($scope.detailsdata.price_level !== undefined) {
           $scope.detailsdata.price_level = Array($scope.detailsdata.price_level + 1).join('$');
@@ -153,9 +164,9 @@ app.controller('FormCtrl', ['$scope', '$window', ($scope, $window) => {
         }
 
         // Map
-        $scope.directionsService = new google.maps.DirectionsService;
+        let pos = {lat: place.geometry.location.lat(), lng: place.geometry.location.lng()};
         $scope.map = new google.maps.Map(document.getElementById('map'), {
-          center: {lat: place.geometry.location.lat(), lng: place.geometry.location.lng()},
+          center: pos,
           zoom: 15
         });
         $scope.marker = new google.maps.Marker({
@@ -163,10 +174,12 @@ app.controller('FormCtrl', ['$scope', '$window', ($scope, $window) => {
           map: $scope.map,
           title: 'Hello World!'
         });
-        $scope.directionsDisplay = new google.maps.DirectionsRenderer({
-          map: $scope.map,
-          panel: document.getElementById('routeinfo')
-        });
+        $scope.panorama = $scope.map.getStreetView();
+        $scope.panorama.setPosition(pos);
+        $scope.panorama.setPov(/** @type {google.maps.StreetViewPov} */({
+          heading: 265,
+          pitch: 0
+        }));
 
         $scope.mapto = $scope.detailsdata.name + ', ' + $scope.detailsdata.formatted_address;
 
@@ -209,6 +222,7 @@ app.controller('FormCtrl', ['$scope', '$window', ($scope, $window) => {
   };
 
   $scope.getdirections = (maplat, maplon) => {
+    $scope.directionsDisplay.setMap($scope.map);
     $scope.marker.setMap(null);
     let start = {lat: maplat, lng: maplon};
     $scope.directionsService.route({
@@ -222,9 +236,21 @@ app.controller('FormCtrl', ['$scope', '$window', ($scope, $window) => {
       } else {
         window.alert('Directions request failed due to ' + status);
       }
+      $scope.showrouteinfo = true;
+      $scope.$apply();
     });
   };
 
+  $scope.panohandler = () => {
+    let toggle = $scope.panorama.getVisible();
+    if (toggle === false) {
+      $scope.panostate = true;
+      $scope.panorama.setVisible(true);
+    } else {
+      $scope.panostate = false;
+      $scope.panorama.setVisible(false);
+    }
+  };
 }]);
 
 // onload
