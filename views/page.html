@@ -24,14 +24,14 @@
     <div class="row">
       <div class="col-md-2 offset-md-2">Keyword<span style="color:red">*</span></div>
       <div class="col-md-6">
-        <input type="text" id="keyword" name="keyword" class="form-control" pattern=".*\S.*" placeholder=""
+        <input type="text" id="keyword" class="form-control" pattern=".*\S.*" placeholder=""
                ng-required="true" ng-model="keyword">
         <div class="invalid-feedback">Please enter a keyword.</div>
       </div>
 
       <div class="col-md-2 offset-md-2">Category</div>
       <div class="col-md-6">
-        <select class="form-control" id="category" name="category" ng-init="category='default'" ng-model="category">
+        <select class="form-control" id="category" ng-init="category='default'" ng-model="category">
           <option value="default">Default</option>
           <option value="airport">Airport</option>
           <option value="amusement_park">Amusement Park</option>
@@ -66,7 +66,7 @@
 
       <div class="col-md-2 offset-md-2" id="test">Distance (miles)</div>
       <div class="col-md-6">
-        <input type="text" name="distance" id="distance" class="form-control" placeholder="10" ng-model="distance">
+        <input type="text" id="distance" class="form-control" placeholder="10" ng-model="distance">
       </div>
 
       <div class="col-md-2 offset-md-2">From<span style="color:red">*</span></div>
@@ -110,7 +110,7 @@
 
 
   <!--Content-->
-  <div id="container" ng-init="showall=false" ng-model="showall" ng-show="showall">
+  <div class="container" ng-init="showall=false" ng-model="showall" ng-show="showall">
     <!--No list-->
     <div class="alert alert-warning" ng-init="nolist=false" ng-model="nolist" ng-show="nolist">No records</div>
 
@@ -119,7 +119,7 @@
     </div>
 
     <!--Results-->
-    <div id="respanel" class="panel"
+    <div id="respanel" class="container"
          ng-init="restabledata=[]" ng-model="restabledata" ng-show="topnavtab==1 && restabledata.length!=0 && !nolist">
       <!--List-->
       <div id="list" ng-animate="'animate'" ng-hide="displaydetails">
@@ -233,7 +233,31 @@
           </div>
         </div>
         <div id="mappanel" class="panel" ng-show="detailsnavtab==3">
-          <div id="map"></div>
+          <div class="row">
+            <div class="col-md-4">From
+              <input class="form-control" type="text" id="mapfrom"
+                     ng-model="mapfrom" ng-init="mapfrom='Your location'">
+            </div>
+            <div class="col-md-4">To
+              <input class="form-control" disabled type="text" id="mapto"
+                     ng-model="mapto">
+            </div>
+            <div class="col-md-2">Travel Mode
+              <select class="form-control" id="travelmode" ng-model="travelmode" ng-init="travelmode='DRIVING'">
+                <option value="DRIVING">Driving</option>
+                <option value="BICYCLING">Bicycling</option>
+                <option value="TRANSIT">Transit</option>
+                <option value="WALKING">Walking</option>
+              </select>
+            </div>
+            <div class="col-md-2"><br>
+              <button class="btn btn-primary" ng-click="directionsbuttonhandler()">Get Directions</button>
+            </div>
+          </div>
+
+          <div id="map" style="height: 390px; margin: 20px 0;"></div>
+
+          <div id="routeinfo"></div>
         </div>
         <div id="reviewspanel" class="panel" ng-show="detailsnavtab==4">
           reviewspanel

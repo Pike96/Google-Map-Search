@@ -105,13 +105,11 @@ app.controller('FormCtrl', ['$scope', '$window', ($scope, $window) => {
         });
     } else {
       $scope.pagenum++;
-      //$scope.$apply();
     }
   };
 
   $scope.prev = () => {
     $scope.pagenum--;
-    //$scope.$apply();
   };
 
   $scope.getdetails = (placeid) => {
@@ -119,11 +117,12 @@ app.controller('FormCtrl', ['$scope', '$window', ($scope, $window) => {
     $scope.placeid = placeid;
     $window.placeid = placeid;
 
-    $scope.map = new google.maps.Map(document.getElementById('map'), {
+    let map = new google.maps.Map(document.getElementById('map'), {
       center: {lat: -33.866, lng: 151.196},
       zoom: 15
     });
-    let service = new google.maps.places.PlacesService($scope.map);
+
+    let service = new google.maps.places.PlacesService(map);
     service.getDetails({placeId: placeid}, (place, status) => {
       if (status === google.maps.places.PlacesServiceStatus.OK) {
         $scope.detailsdata = place;
@@ -152,7 +151,76 @@ app.controller('FormCtrl', ['$scope', '$window', ($scope, $window) => {
           }
           $scope.detailsdata.todayhrs = str;
         }
+
+        // Map
+        $scope.directionsService = new google.maps.DirectionsService;
+        $scope.map = new google.maps.Map(document.getElementById('map'), {
+          center: {lat: place.geometry.location.lat(), lng: place.geometry.location.lng()},
+          zoom: 15
+        });
+        $scope.marker = new google.maps.Marker({
+          position: {lat: place.geometry.location.lat(), lng: place.geometry.location.lng()},
+          map: $scope.map,
+          title: 'Hello World!'
+        });
+        $scope.directionsDisplay = new google.maps.DirectionsRenderer({
+          map: $scope.map,
+          panel: document.getElementById('routeinfo')
+        });
+
+        $scope.mapto = $scope.detailsdata.name + ', ' + $scope.detailsdata.formatted_address;
+
+        let autocomplete = new google.maps.places.Autocomplete(
+          (document.getElementById('mapfrom')),
+          {types: ['geocode']});
+        google.maps.event.addListener(autocomplete, 'place_changed', function () {});
+
         $scope.$apply();
+      }
+    });
+  };
+
+  $scope.directionsbuttonhandler = () => {
+    let maplat, maplon;
+    if ($('#mapfrom').val() === 'Your location'
+      || $('#mapfrom').val() === 'My location'
+      || $('#mapfrom').val() === 'My Location') {
+      fetch('http://ip-api.com/json')
+        .then(resp => resp.json())
+        .then(json => {
+          maplat = json.lat;
+          maplon = json.lon;
+          $scope.getdirections(maplat, maplon);
+        }).catch( error => {
+        $scope.errordetails = true;
+      });
+    } else {
+      let mapfrom = $('#mapfrom').val().split(' ').join('+');
+      fetch(DOMAIN + '/location?loc=' + mapfrom)
+        .then(resp => resp.json())
+        .then(json => {
+          maplat = json.lat;
+          maplon = json.lon;
+          $scope.getdirections(maplat, maplon);
+        }).catch( error => {
+        $scope.errordetails = true;
+      });
+    }
+  };
+
+  $scope.getdirections = (maplat, maplon) => {
+    $scope.marker.setMap(null);
+    let start = {lat: maplat, lng: maplon};
+    $scope.directionsService.route({
+      origin: start,
+      destination: {lat: $scope.detailsdata.geometry.location.lat(), lng: $scope.detailsdata.geometry.location.lng()},
+      travelMode: google.maps.TravelMode[$scope.travelmode],
+      provideRouteAlternatives: true
+    }, function(response, status) {
+      if (status === 'OK') {
+        $scope.directionsDisplay.setDirections(response);
+      } else {
+        window.alert('Directions request failed due to ' + status);
       }
     });
   };
