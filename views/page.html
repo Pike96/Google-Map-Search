@@ -114,6 +114,10 @@
     <!--No list-->
     <div class="alert alert-warning" ng-init="nolist=false" ng-model="nolist" ng-show="nolist">No records</div>
 
+    <div class="alert alert-danger" ng-init="errorlist=false" ng-model="errorlist" ng-show="errorlist">
+      Failed to get search results.
+    </div>
+
     <!--Results-->
     <div id="respanel" class="panel"
          ng-init="restabledata=[]" ng-model="restabledata" ng-show="topnavtab==1 && restabledata.length!=0 && !nolist">

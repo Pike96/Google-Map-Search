@@ -23,6 +23,7 @@ app.controller('FormCtrl', ['$scope', '$window', ($scope, $window) => {
   };
 
   $scope.submitForm = () => {
+    $scope.errorlist = false;
     $scope.restabledata = [];
     $scope.showall = true;
     $scope.showprogress = true;
@@ -41,7 +42,10 @@ app.controller('FormCtrl', ['$scope', '$window', ($scope, $window) => {
           $scope.showprogress = false;
           $scope.topnavtab = 1;
           $scope.apisearch(keyword, category, distance, lat, lon);
-        });
+        }).catch( error => {
+          $scope.showprogress = false;
+          $scope.errorlist = true;
+      });
 
     } else {
       let loc = $('#loc').val().split(' ').join('+');
@@ -52,7 +56,10 @@ app.controller('FormCtrl', ['$scope', '$window', ($scope, $window) => {
           lat = json.lat;
           lon = json.lon;
           $scope.apisearch(keyword, category, distance, lat, lon);
-        });
+        }).catch( error => {
+          $scope.showprogress = false;
+          $scope.errorlist = true;
+      });
     }
   };
 
@@ -72,13 +79,13 @@ app.controller('FormCtrl', ['$scope', '$window', ($scope, $window) => {
         $scope.topnavtab = 1;
         if (json.status === "ZERO_RESULTS" && json.results !== undefined) {
           $scope.nolist = true;
-          $scope.showrestable = false;
         } else {
           $scope.nolist = false;
-          $scope.showrestable = true;
         }
         setTimeout($scope.$apply(), 2000);
-      });
+      }).catch( error => {
+        $scope.errorlist = true;
+    });
   };
 
   $scope.next = () => {
@@ -170,9 +177,10 @@ $(window).on('load', () => {
   });
 
   // Autocomplete
-  let autocomplete = new google.maps.places.Autocomplete(
-    (document.getElementById('loc')),
-    {types: ['geocode']});
-  google.maps.event.addListener(autocomplete, 'place_changed', function () {});
-
+  try {
+    let autocomplete = new google.maps.places.Autocomplete(
+      (document.getElementById('loc')),
+      {types: ['geocode']});
+    google.maps.event.addListener(autocomplete, 'place_changed', function () {});
+  } catch (e) {}
 });
