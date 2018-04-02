@@ -143,3 +143,20 @@ a {
   content:"\2605\2605\2605\2605\2605";
   font-size: 14pt;
 }
+
+#photospanel {
+  column-count: 4;
+  column-gap: 2px;
+}
+
+.photoanchor {
+  padding: 3px;
+}
+
+
+
+@media only screen and (max-width: 768px) {
+  #photospanel {
+    column-count: 1;
+  }
+}

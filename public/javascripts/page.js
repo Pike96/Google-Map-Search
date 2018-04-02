@@ -120,6 +120,10 @@ app.controller('FormCtrl', ['$scope', '$window', ($scope, $window) => {
     service.getDetails({placeId: placeid}, (place, status) => {
       if (status === google.maps.places.PlacesServiceStatus.OK) {
         $scope.detailsdata = place;
+        $scope.photodata = [];
+        for (let i = 0; i < place.photos.length; i++) {
+          $scope.photodata.push(place.photos[i].getUrl({'maxWidth': 2000}));
+        }
         if ($scope.detailsdata.price_level !== undefined) {
           $scope.detailsdata.price_level = Array($scope.detailsdata.price_level + 1).join('$');
         }
@@ -139,7 +143,6 @@ app.controller('FormCtrl', ['$scope', '$window', ($scope, $window) => {
           } else {
             str = 'Closed';
           }
-
           $scope.detailsdata.todayhrs = str;
         }
         $scope.$apply();
@@ -170,7 +173,6 @@ $(window).on('load', () => {
   let autocomplete = new google.maps.places.Autocomplete(
     (document.getElementById('loc')),
     {types: ['geocode']});
-  google.maps.event.addListener(autocomplete, 'place_changed', function () {
-  });
+  google.maps.event.addListener(autocomplete, 'place_changed', function () {});
 
 });
