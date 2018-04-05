@@ -4,6 +4,11 @@ body {
   vertical-align: center;
 }
 
+#content, #list, #details {
+  padding: 0;
+  width: 100%;
+}
+
 a {
   color: #00B7FF;
 }
@@ -46,7 +51,6 @@ h4 {
 
 .progress {
   margin: 100px auto;
-  width: 75%;
 }
 
 .alert {
@@ -190,7 +194,23 @@ img.float-right:hover {
   cursor: pointer;
 }
 
-@media only screen and (max-width: 768px) {
+.btn {
+  border: 1px solid #ccc;
+}
+
+#mappanel .row div {
+  line-height: 41px;
+}
+
+#restable {
+  min-width: 1100px;
+  display: block;
+}
+
+@media only screen and (max-width: 800px) {
+  #mapbuttonlabel {
+    height: 15px;
+  }
   #photoscontainer {
     column-count: 1;
   }

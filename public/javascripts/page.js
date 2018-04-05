@@ -1,6 +1,7 @@
 'use strict';
 
-const DOMAIN = 'http://mapsearchpike96.rajgs5wdu2.us-west-1.elasticbeanstalk.com';
+//const DOMAIN = 'http://mapsearchpike96.rajgs5wdu2.us-west-1.elasticbeanstalk.com';
+const DOMAIN = 'http://localhost:3232';
 
 let app = angular.module('mapApp', ['ngAnimate']);
 
@@ -52,7 +53,6 @@ app.controller('FormCtrl', ['$scope', '$window', ($scope, $window) => {
         .then(json => {
           lat = json.lat;
           lon = json.lon;
-          $scope.showprogress = false;
           $scope.apisearch(keyword, category, distance, lat, lon);
         }).catch( error => {
           $scope.showprogress = false;
