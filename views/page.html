@@ -98,10 +98,12 @@
 
   <ul id="topnav" class="nav nav-pills" ng-init="topnavtab=1" ng-model="topnavtab">
     <li class="nav-item">
-      <a id="restab" class="nav-link" ng-class="{active: topnavtab==1}" href="#" ng-click="topnavtab=1; displaydetails=false;">Results</a>
+      <a id="restab" class="nav-link" ng-class="{active: topnavtab==1}" href="#"
+         ng-click="topnavtab=1; displaydetails = false; topnavhandler();">Results</a>
     </li>
     <li class="nav-item">
-      <a id="favtab" class="nav-link" ng-class="{active: topnavtab==2}" href="#" ng-click="topnavtab=2; displaydetails=false;">Favorites</a>
+      <a id="favtab" class="nav-link" ng-class="{active: topnavtab==2}" href="#"
+         ng-click="topnavtab=2; displaydetails = false; topnavhandler();">Favorites</a>
     </li>
   </ul>
 
@@ -113,52 +115,60 @@
 
   <!--Content-->
   <div class="container" ng-init="showall=false" ng-model="showall" ng-show="showall">
-    <!--No list-->
-    <div class="alert alert-warning" ng-init="nolist=false" ng-model="nolist" ng-show="nolist">No records</div>
-
-    <div class="alert alert-danger" ng-init="errorlist=false" ng-model="errorlist" ng-show="errorlist">
-      Failed to get search results.
-    </div>
-
-    <!--Results-->
-    <div id="respanel" class="container"
-         ng-init="restabledata=[]" ng-model="restabledata" ng-show="topnavtab==1 && restabledata.length!=0 && !nolist">
       <!--List-->
-      <div id="list" ng-animate="'animate'" ng-hide="displaydetails">
-        <button class="btn btn-default float-right" id="gotodetails"
-                ng-disabled="placeid===undefined" ng-click="getdetails(placeid)">
-          Details <i class="fa fa-chevron-right" aria-hidden="true"></i>
-        </button>
+      <div id="list" class="container" ng-animate="'animate'" ng-hide="displaydetails">
+        <!--No list-->
+        <div class="alert alert-warning" ng-init="nolist=false" ng-model="nolist" ng-show="nolist">No records</div>
+        <!--Error list-->
+        <div class="alert alert-danger" ng-init="errorlist=false" ng-model="errorlist" ng-show="errorlist">
+          Failed to get search results.
+        </div>
 
-        <table id="restable" class="table table-striped" ng-init="pagenum=1" ng-model="pagenum">
-          <tr>
-            <th >#</th>
-            <th >Category</th>
-            <th >Name</th>
-            <th >Address</th>
-            <th >Favorite</th>
-            <th >Details</th>
-          </tr>
-          <tr ng-repeat="data in restabledata[pagenum-1]">
-            <td ng-style="highlight(data.place_id)">{{$index+1}}</td>
-            <td ng-style="highlight(data.place_id)"><img src="{{data.icon}}" height="36px" width="36px" style="margin:0;"></td>
-            <td ng-style="highlight(data.place_id)">{{data.name}}</td>
-            <td ng-style="highlight(data.place_id)">{{data.vicinity}}</td>
-            <td ng-style="highlight(data.place_id)">
-              <button class="btn btn-default">
-                <i class="fa fa-star-o" aria-hidden="true" ng-click="favhandler()"></i>
-              </button>
-            </td>
-            <td ng-style="highlight(data.place_id)">
-              <button class="btn btn-default" ng-click="getdetails(data.place_id)">
-                <i class="fa fa-chevron-right" aria-hidden="true"></i>
-              </button>
-            </td>
-          </tr>
-        </table>
-        <div id="pagehelper">
-          <a href="#" class="pagebutton" ng-show="pagenum!=1" ng-click="prev()">Previous</a>
-          <a href="#" class="pagebutton" ng-show="restabledata[pagenum-1].hasnextpage" ng-click="next()">Next</a>
+        <div ng-init="tabledata=[]" ng-model="tabledata" ng-show="tabledata.length!=0 && !nolist">
+          <!--Go to details page-->
+          <button class="btn btn-default float-right" id="gotodetails"
+                  ng-disabled="placeid===undefined" ng-click="getdetails(placeid,lastfaved)">
+            Details <i class="fa fa-chevron-right" aria-hidden="true"></i>
+          </button>
+
+          <!--List table-->
+          <table id="restable" class="table table-striped" ng-init="pagenum=1" ng-model="pagenum">
+            <tr>
+              <th >#</th>
+              <th >Category</th>
+              <th >Name</th>
+              <th >Address</th>
+              <th >Favorite</th>
+              <th >Details</th>
+            </tr>
+            <tr ng-repeat="data in tabledata[pagenum-1]">
+              <td ng-style="highlight(data.place_id)">{{$index+1}}</td>
+              <td ng-style="highlight(data.place_id)"><img src="{{data.icon}}" height="36px" width="36px" style="margin:0;"></td>
+              <td ng-style="highlight(data.place_id)">{{data.name}}</td>
+              <td ng-style="highlight(data.place_id)">{{data.vicinity}}</td>
+              <td ng-style="highlight(data.place_id)">
+                <button class="btn btn-default"
+                        ng-click="data.faved=!data.faved; favhandler(data.place_id, data.name, data.vicinity, data.icon);">
+                  <i class="fa fa-star-o" aria-hidden="true"
+                     ng-if="favlist[data.place_id]===undefined && topnavtab===1"></i>
+                  <i class="fa fa-star" style="color: #ffb10d;" aria-hidden="true"
+                     ng-if="favlist[data.place_id]!==undefined && topnavtab===1"></i>
+                  <i class="fa fa-trash" aria-hidden="true" ng-if="topnavtab===2"></i>
+                </button>
+              </td>
+              <td ng-style="highlight(data.place_id)">
+                <button class="btn btn-default" ng-click="getdetails(data.place_id, data.faved)">
+                  <i class="fa fa-chevron-right" aria-hidden="true"></i>
+                </button>
+              </td>
+            </tr>
+          </table>
+
+          <!--PageHelper-->
+          <div id="pagehelper">
+            <a href="#" class="pagebutton" ng-show="pagenum!=1" ng-click="prev()">Previous</a>
+            <a href="#" class="pagebutton" ng-show="tabledata[pagenum-1].hasnextpage" ng-click="next()">Next</a>
+          </div>
         </div>
       </div>
 
@@ -166,18 +176,26 @@
       <div id="details" class="container"
            ng-init="detailsdata=[]" ng-model="detailsdata" ng-animate="'animate'" ng-hide="!displaydetails">
         <h4>{{detailsdata.name}}</h4>
+        <!--Go to list page-->
         <button class="btn btn-default" ng-click="displaydetails=false">
           <i class="fa fa-chevron-left" aria-hidden="true"></i> List
         </button>
 
+        <!--Star & Twitter button-->
         <img class="float-right" style="height: 40px" src="http://cs-server.usc.edu:45678/hw/hw8/images/Twitter.png"
              ng-click="twittershare()">
         <button class="btn btn-default float-right" style="height: 40px; margin-right: 10px;"
-                ng-click="">
-          <i class="fa fa-star-o" aria-hidden="true"></i>
+                ng-click="detailsdata.faved=!detailsdata.faved;
+                favhandler(detailsdata.place_id, detailsdata.name, detailsdata.formatted_address, detailsdata.icon);">
+          <i class="fa fa-star-o" aria-hidden="true"
+             ng-if="favlist[detailsdata.place_id]===undefined">
+          </i>
+          <i class="fa fa-star" style="color: #ffb10d;" aria-hidden="true"
+             ng-if="favlist[detailsdata.place_id]!==undefined">
+          </i>
         </button>
 
-
+        <!--Navbar-->
         <ul style="margin: 20px 0; width: 100%;" id="detailsnav" class="nav nav-tabs justify-content-end"
             ng-init="detailsnavtab=1" ng-model="detailsnavtab">
           <li class="nav-item">
@@ -198,6 +216,7 @@
           </li>
         </ul>
 
+        <!--Info-->
         <div id="infopanel" class="panel" ng-show="detailsnavtab==1">
           <table class="table table-striped"><tbody>
             <tr ng-if="detailsdata.formatted_address !== undefined">
@@ -238,6 +257,7 @@
             </tr>
           </tbody></table>
 
+          <!--Modal of Opening hours-->
           <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog"
                aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered" role="document">
@@ -265,8 +285,9 @@
               </div>
             </div>
           </div>
-
         </div>
+
+        <!--Photos-->
         <div id="photospanel" class="" ng-show="detailsnavtab==2">
           <div class="alert alert-warning" ng-init="nophoto=false" ng-model="nophoto" ng-show="nophoto">No records</div>
           <div id="photoscontainer">
@@ -277,6 +298,8 @@
             </div>
           </div>
         </div>
+
+        <!--Map-->
         <div id="mappanel" class="panel" ng-show="detailsnavtab==3">
           <div class="row">
             <div class="col-md-4">From
@@ -310,6 +333,8 @@
 
           <div id="routeinfo" ng-init="showrouteinfo=false" ng-show="showrouteinfo" ng-model="showrouteinfo"></div>
         </div>
+
+        <!--Reviews-->
         <div id="reviewspanel" class="panel" ng-show="detailsnavtab==4">
           <div class="row">
             <div class="dropdown">
@@ -385,11 +410,6 @@
 
       </div>
 
-    </div>
-
-    <div id="favpanel" class="panel" ng-show="topnavtab==2">
-      FAVTABLE
-    </div>
   </div>
 </form>
 

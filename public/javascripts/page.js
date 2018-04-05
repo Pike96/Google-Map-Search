@@ -6,6 +6,9 @@ const API_KEY = 'AIzaSyDf2PYwxk-hPRw0ZQDIO0TamURG3zkYX38';
 let app = angular.module('mapApp', ['ngAnimate']);
 
 app.controller('FormCtrl', ['$scope', '$window', ($scope, $window) => {
+  let stored = localStorage.getItem('favlist');
+  $scope.favlist = stored === '' || stored === null ? {} : JSON.parse(stored);
+
   $scope.map = new google.maps.Map(document.getElementById('map'), {
     center: {lat: -33.866, lng: 151.196},
     zoom: 15
@@ -26,18 +29,20 @@ app.controller('FormCtrl', ['$scope', '$window', ($scope, $window) => {
     $('#distance').val('');
     $('#loc').val('');
     $scope.from = 'here';
-    $scope.topnavtab = 1;
     $scope.showall = false;
+    $scope.topnavtab = 1;
     $scope.displaydetails = false;
-    $scope.restabledata = [];
+    $scope.tabledata = [];
   };
 
   $scope.submitForm = () => {
     $scope.errorlist = false;
-    $scope.restabledata = [];
     $scope.showall = true;
     $scope.showprogress = true;
+    $scope.topnavtab = 1;
     $scope.displaydetails = false;
+    $scope.tabledata = [];
+    $scope.resbackup = [];
     let keyword = $('#keyword').val().split(' ').join('+');
     let category = $scope.category;
     let distance = $scope.distance === undefined || $scope.distance === '' ? 10 : $scope.distance;
@@ -49,7 +54,6 @@ app.controller('FormCtrl', ['$scope', '$window', ($scope, $window) => {
           lat = json.lat;
           lon = json.lon;
           $scope.showprogress = false;
-          $scope.topnavtab = 1;
           $scope.apisearch(keyword, category, distance, lat, lon);
         }).catch( error => {
           $scope.showprogress = false;
@@ -76,19 +80,26 @@ app.controller('FormCtrl', ['$scope', '$window', ($scope, $window) => {
       + '&distance=' + distance + '&lat=' + lat + '&lon=' + lon)
       .then(resp => resp.json())
       .then(json => {
-        $scope.pagenum = 1;
-        if (json.next_page_token !== undefined) {
-          $scope.nextpagetoken = json.next_page_token;
-          json.results.hasnextpage = true;
-        }
-        $scope.restabledata.push(json.results);
-
-        $scope.showprogress = false;
-        $scope.topnavtab = 1;
         if (json.status === "ZERO_RESULTS" && json.results !== undefined) {
           $scope.nolist = true;
         } else {
           $scope.nolist = false;
+          $scope.pagenum = 1;
+          if (json.next_page_token !== undefined) {
+            $scope.nextpagetoken = json.next_page_token;
+            json.results.hasnextpage = true;
+          }
+          $scope.tabledata.push(json.results);
+          for (let i = 0; i < $scope.tabledata[0].length; i++) {
+            if ($scope.favlist[$scope.tabledata[0][i].place_id] !== undefined) {
+              $scope.tabledata[0][i].faved = true;
+            }
+          }
+          $scope.resbackup.table = $scope.tabledata;
+          $scope.resbackup.page = 1;
+
+          $scope.showprogress = false;
+          $scope.topnavtab = 1;
         }
         setTimeout($scope.$apply(), 2000);
       }).catch( error => {
@@ -97,7 +108,7 @@ app.controller('FormCtrl', ['$scope', '$window', ($scope, $window) => {
   };
 
   $scope.next = () => {
-    if ($scope.restabledata[$scope.pagenum + 1] === undefined) {
+    if ($scope.tabledata[$scope.pagenum + 1] === undefined) {
       fetch(DOMAIN + '/nextpage?pagetoken=' + $scope.nextpagetoken)
         .then(resp => resp.json())
         .then(json => {
@@ -108,19 +119,30 @@ app.controller('FormCtrl', ['$scope', '$window', ($scope, $window) => {
           } else {
             json.results.hasnextpage = false;
           }
-          $scope.restabledata.push(json.results);
+          $scope.tabledata.push(json.results);
+          for (let i = 0; i < $scope.tabledata[$scope.pagenum-1].length; i++) {
+            if ($scope.favlist[$scope.tabledata[$scope.pagenum-1][i].place_id] !== undefined) {
+              $scope.tabledata[$scope.pagenum-1][i].faved = true;
+            }
+          }
+          $scope.resbackup.table = $scope.tabledata;
+          $scope.resbackup.page = $scope.pagenum;
           $scope.$apply();
         });
     } else {
       $scope.pagenum++;
+      $scope.resbackup.table = $scope.tabledata;
+      $scope.resbackup.page = $scope.pagenum;
     }
   };
 
   $scope.prev = () => {
     $scope.pagenum--;
+    $scope.resbackup.table = $scope.tabledata;
+    $scope.resbackup.page = $scope.pagenum;
   };
 
-  $scope.getdetails = (placeid) => {
+  $scope.getdetails = (placeid, faved) => {
     $scope.displaydetails = true;
     $scope.placeid = placeid;
     $window.placeid = placeid;
@@ -202,6 +224,9 @@ app.controller('FormCtrl', ['$scope', '$window', ($scope, $window) => {
         $('#reviewtypebutton').text('Google Reviews');
         $scope.revieworder = '';
         $('#revieworderbutton').text('Default Order');
+
+        $scope.detailsdata.faved = faved;
+        $scope.lastfaved = faved;
 
         $scope.$apply();
       }
@@ -349,6 +374,56 @@ app.controller('FormCtrl', ['$scope', '$window', ($scope, $window) => {
   $scope.highlight = (placeid) => {
     if (placeid === $scope.placeid) {
       return {'background-color': '#fed98c'};
+    }
+  };
+
+  $scope.favhandler = (placeid, name, address, icon) => {
+    let stored = localStorage.getItem('favlist');
+    $scope.favlist = stored === '' || stored === null ? {} : JSON.parse(stored);
+    if ($scope.favlist[placeid] !== undefined) {
+      delete $scope.favlist[placeid];
+    } else {
+      $scope.favlist[placeid] = {};
+      $scope.favlist[placeid].name = name;
+      $scope.favlist[placeid].address = address;
+      $scope.favlist[placeid].icon = icon;
+    }
+    localStorage.setItem('favlist', JSON.stringify($scope.favlist));
+    if ($scope.topnavtab === 2) {
+      $scope.topnavhandler();
+    }
+  };
+
+  $scope.topnavhandler = () => {
+    if ($scope.topnavtab === 1) {
+      if ($scope.resbackup === []) {
+        $scope.nolist = true;
+      } else {
+        $scope.nolist = false;
+        $scope.tabledata = $scope.resbackup.table;
+        $scope.pagenum = $scope.resbackup.page;
+      }
+    } else {
+      let stored = localStorage.getItem('favlist');
+      $scope.favlist = stored === '' || stored === null ? {} : JSON.parse(stored);
+      if (angular.equals($scope.favlist, {})) {
+        $scope.nolist = true;
+        return;
+      } else {
+        $scope.nolist = false;
+      }
+      $scope.tabledata = [];
+      $scope.tabledata[0] = [];
+      for (let key in $scope.favlist) {
+        let item = {};
+        item.name = $scope.favlist[key].name;
+        item.vicinity = $scope.favlist[key].address;
+        item.icon = $scope.favlist[key].icon;
+        item.place_id = key;
+        item.faved = true;
+        $scope.tabledata[0].push(item);
+      }
+      $scope.pagenum = 1;
     }
   };
 }]);
