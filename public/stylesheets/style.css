@@ -12,7 +12,7 @@ a {
   background-color: #f1f1f1;
 }
 
-#searchbox h4 {
+h4 {
   margin: 20px 10px;
   text-align: center;
 }
@@ -49,6 +49,10 @@ a {
   width: 75%;
 }
 
+.alert {
+  margin: 100px 0;
+}
+
 #restable th {
   background-color: white;
 }
@@ -58,7 +62,7 @@ a {
 }
 
 #restable tr:hover td {
-  background-color: #cccccc;
+  background-color: #ccc;
 }
 #gotodetails {
   margin: 10px 0;
@@ -151,6 +155,39 @@ a {
 #panobutton {
   margin-top: 10px;
   padding: 0;
+}
+
+.dropdown {
+  padding-left: 20px;
+  padding-bottom: 20px;
+}
+
+.reviewitem {
+  display: flex;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  margin: 10px 0;
+  padding: 20px;
+}
+
+.portrait {
+  height: 70px;
+  width: 70px;
+  margin-right: 0px;
+}
+
+.portraitdiv {
+  height: 99px;
+  max-width: 90px;
+  min-width: 90px;
+}
+
+.timespan {
+  color: #888;
+}
+
+img.float-right:hover {
+  cursor: pointer;
 }
 
 @media only screen and (max-width: 768px) {

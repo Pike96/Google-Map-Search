@@ -42,7 +42,6 @@ app.controller('FormCtrl', ['$scope', '$window', ($scope, $window) => {
     let category = $scope.category;
     let distance = $scope.distance === undefined || $scope.distance === '' ? 10 : $scope.distance;
     let lat, lon;
-    console.log($scope.from);
     if ($scope.from === 'here') {
       fetch('http://ip-api.com/json')
         .then(resp => resp.json())
@@ -59,7 +58,6 @@ app.controller('FormCtrl', ['$scope', '$window', ($scope, $window) => {
 
     } else {
       let loc = $('#loc').val().split(' ').join('+');
-      console.log(loc);
       fetch(DOMAIN + '/location?loc=' + loc)
         .then(resp => resp.json())
         .then(json => {
@@ -131,8 +129,10 @@ app.controller('FormCtrl', ['$scope', '$window', ($scope, $window) => {
     let service = new google.maps.places.PlacesService($scope.map);
     service.getDetails({placeId: placeid}, (place, status) => {
       if (status === google.maps.places.PlacesServiceStatus.OK) {
+        $scope.detailsnavtab = 1;
         $scope.detailsdata = place;
         $scope.photodata = [];
+        $scope.reviewsdata = place.reviews;
         if (place.photos === undefined || place.photos.length === 0) {
           $scope.nophoto = true;
         } else {
@@ -161,6 +161,7 @@ app.controller('FormCtrl', ['$scope', '$window', ($scope, $window) => {
             str = 'Closed';
           }
           $scope.detailsdata.todayhrs = str;
+
         }
 
         // Map
@@ -187,6 +188,20 @@ app.controller('FormCtrl', ['$scope', '$window', ($scope, $window) => {
           (document.getElementById('mapfrom')),
           {types: ['geocode']});
         google.maps.event.addListener(autocomplete, 'place_changed', function () {});
+
+        try {
+          for (let i = 0; i < $scope.reviewsdata.length; i++) {
+            $scope.reviewsdata[i].timeformatted = moment($scope.reviewsdata[i].time * 1000).format('YYYY-MM-DD HH:mm:ss');
+          }
+          $scope.noreview = false;
+        } catch (error) {
+          $scope.noreview = true;
+        }
+
+        $scope.reviewtype = 'g';
+        $('#reviewtypebutton').text('Google Reviews');
+        $scope.revieworder = '';
+        $('#revieworderbutton').text('Default Order');
 
         $scope.$apply();
       }
@@ -249,6 +264,91 @@ app.controller('FormCtrl', ['$scope', '$window', ($scope, $window) => {
     } else {
       $scope.panostate = false;
       $scope.panorama.setVisible(false);
+    }
+  };
+
+  $scope.reviewtypehandler = (text) => {
+    $('#reviewtypebutton').text(text);
+    if (text === 'Google Reviews') {
+      $scope.reviewsdata = $scope.detailsdata.reviews;
+      if ($scope.reviewsdata === undefined || $scope.reviewsdata.length === 0) {
+        $scope.noreview = true;
+        $scope.$apply();
+        return;
+      }
+      $scope.noreview = false;
+      for (let i = 0; i < $scope.reviewsdata.length; i++) {
+        $scope.reviewsdata[i].timeformatted = moment($scope.reviewsdata[i].time * 1000).format('YYYY-MM-DD HH:mm:ss');
+      }
+    } else {
+      let addressArr = $scope.detailsdata.address_components;
+      let name = $scope.detailsdata.name;
+      let address1 = $scope.detailsdata.formatted_address;
+      let city, state, country;
+      for (let i = 0; i< addressArr.length; i++) {
+        if (addressArr[i].types[0] === 'locality') {
+          city = addressArr[i].short_name;
+        }
+        if (addressArr[i].types[0] === 'administrative_area_level_1') {
+          state = addressArr[i].short_name
+        }
+        if (addressArr[i].types[0] === 'country') {
+          country = addressArr[i].short_name;
+        }
+      }
+
+      name = name.split(' ').join('+');
+      address1 = address1.split(' ').join('+');
+      city = city.split(' ').join('+');
+
+      let url = DOMAIN + '/yelp?name=' + name + '&address1=' + address1
+        + '&city=' + city + '&state=' + state + '&country=' + country;
+      fetch(url)
+        .then(resp => resp.json())
+        .then(json => {
+          if (json.length === 0) {
+            $scope.reviewsdata = json;
+            $scope.noreview = true;
+            $scope.$apply();
+            return;
+          }
+          $scope.noreview = false;
+          for (let i = 0; i< json.length; i++) {
+            json[i].profile_photo_url = json[i].user.image_url;
+            json[i].author_url = json[i].url;
+            json[i].author_name = json[i].user.name;
+            json[i].timeformatted = json[i].time_created;
+          }
+          $scope.reviewsdata = json;
+          $scope.$apply();
+        }).catch( error => {
+        $scope.showprogress = false;
+        $scope.errorlist = true;
+      });
+    }
+  };
+
+  $scope.revieworderhandler = (text) => {
+    $('#revieworderbutton').text(text);
+  };
+
+  $scope.twittershare = () => {
+    let url = 'https://twitter.com/intent/tweet?text=';
+    url += 'Check out ' + $scope.detailsdata.name + ' located at ' + $scope.detailsdata.formatted_address + '.';
+    url += ' Website:&url=' + $scope.detailsdata.website;
+    url += '&hashtags=TravelAndEntertainmentSearch';
+    url = encodeURI(url);
+
+    let left = (screen.width/2)-(300);
+    let top = (screen.height/2)-(300);
+    let hWin = $window.open(url, 'Share a link on Twitter', 'height=500,width=500,top='+top+', left='+left);
+    hWin.document.close();
+
+  };
+
+  $scope.highlight = (placeid) => {
+    if (placeid === $scope.placeid) {
+      return {'background-color': '#fed98c'};
     }
   };
 }]);

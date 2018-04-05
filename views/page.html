@@ -14,6 +14,8 @@
   <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
   <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular-animate.js"></script>
 
+  <script src="https://momentjs.com/downloads/moment.min.js"></script>
+
 </head>
 <body ng-controller="FormCtrl">
 
@@ -96,10 +98,10 @@
 
   <ul id="topnav" class="nav nav-pills" ng-init="topnavtab=1" ng-model="topnavtab">
     <li class="nav-item">
-      <a id="restab" class="nav-link" ng-class="{active: topnavtab==1}" href="#" ng-click="topnavtab=1">Results</a>
+      <a id="restab" class="nav-link" ng-class="{active: topnavtab==1}" href="#" ng-click="topnavtab=1; displaydetails=false;">Results</a>
     </li>
     <li class="nav-item">
-      <a id="favtab" class="nav-link" ng-class="{active: topnavtab==2}" href="#" ng-click="topnavtab=2">Favorites</a>
+      <a id="favtab" class="nav-link" ng-class="{active: topnavtab==2}" href="#" ng-click="topnavtab=2; displaydetails=false;">Favorites</a>
     </li>
   </ul>
 
@@ -130,22 +132,24 @@
 
         <table id="restable" class="table table-striped" ng-init="pagenum=1" ng-model="pagenum">
           <tr>
-            <th style="width: 50px;">#</th>
-            <th style="width: 100px;">Category</th>
-            <th style="width: 500px;">Name</th>
-            <th style="width: 500px;">Address</th>
-            <th style="width: 100px;">Favorite</th>
-            <th style="width: 100px;">Details</th>
+            <th >#</th>
+            <th >Category</th>
+            <th >Name</th>
+            <th >Address</th>
+            <th >Favorite</th>
+            <th >Details</th>
           </tr>
           <tr ng-repeat="data in restabledata[pagenum-1]">
-            <td style="width: 50px;">{{$index+1}}</td>
-            <td style="width: 100px;"><img src="{{data.icon}}" height="36px" width="36px" style="margin:0;"></td>
-            <td style="width: 500px;">{{data.name}}</td>
-            <td style="width: 500px;">{{data.vicinity}}</td>
-            <td style="width: 100px;">
-              <button class="btn btn-default"><i class="fa fa-star-o" aria-hidden="true"></i></button>
+            <td ng-style="highlight(data.place_id)">{{$index+1}}</td>
+            <td ng-style="highlight(data.place_id)"><img src="{{data.icon}}" height="36px" width="36px" style="margin:0;"></td>
+            <td ng-style="highlight(data.place_id)">{{data.name}}</td>
+            <td ng-style="highlight(data.place_id)">{{data.vicinity}}</td>
+            <td ng-style="highlight(data.place_id)">
+              <button class="btn btn-default">
+                <i class="fa fa-star-o" aria-hidden="true" ng-click="favhandler()"></i>
+              </button>
             </td>
-            <td style="width: 100px;">
+            <td ng-style="highlight(data.place_id)">
               <button class="btn btn-default" ng-click="getdetails(data.place_id)">
                 <i class="fa fa-chevron-right" aria-hidden="true"></i>
               </button>
@@ -161,11 +165,20 @@
       <!--Details-->
       <div id="details" class="container"
            ng-init="detailsdata=[]" ng-model="detailsdata" ng-animate="'animate'" ng-hide="!displaydetails">
+        <h4>{{detailsdata.name}}</h4>
         <button class="btn btn-default" ng-click="displaydetails=false">
           <i class="fa fa-chevron-left" aria-hidden="true"></i> List
         </button>
 
-        <ul style="margin-bottom: 20px;" id="detailsnav" class="nav nav-tabs justify-content-end"
+        <img class="float-right" style="height: 40px" src="http://cs-server.usc.edu:45678/hw/hw8/images/Twitter.png"
+             ng-click="twittershare()">
+        <button class="btn btn-default float-right" style="height: 40px; margin-right: 10px;"
+                ng-click="">
+          <i class="fa fa-star-o" aria-hidden="true"></i>
+        </button>
+
+
+        <ul style="margin: 20px 0; width: 100%;" id="detailsnav" class="nav nav-tabs justify-content-end"
             ng-init="detailsnavtab=1" ng-model="detailsnavtab">
           <li class="nav-item">
             <a id="infotab" class="nav-link" href="#"
@@ -224,6 +237,35 @@
               </td>
             </tr>
           </tbody></table>
+
+          <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog"
+               aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="exampleModalLongTitle">Open hours</h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                  <table class="table">
+                    <tr ng-repeat="data in detailsdata.opening_hours.weekday_text">
+                      <td ng-if="todayindex != $index">{{data.split(': ')[0]}}</td>
+                      <td ng-if="todayindex != $index">{{data.split(': ')[1]}}</td>
+
+                      <th ng-if="todayindex == $index">{{data.split(': ')[0]}}</th>
+                      <th ng-if="todayindex == $index">{{data.split(': ')[1]}}</th>
+                    </tr>
+                  </table>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
         </div>
         <div id="photospanel" class="" ng-show="detailsnavtab==2">
           <div class="alert alert-warning" ng-init="nophoto=false" ng-model="nophoto" ng-show="nophoto">No records</div>
@@ -269,41 +311,79 @@
           <div id="routeinfo" ng-init="showrouteinfo=false" ng-show="showrouteinfo" ng-model="showrouteinfo"></div>
         </div>
         <div id="reviewspanel" class="panel" ng-show="detailsnavtab==4">
-          <div class="alert alert-warning" ng-init="nogoogle=false" ng-model="nogoogle" ng-show="nogoogle">No records</div>
-          <div class="alert alert-warning" ng-init="noyelp=false" ng-model="noyelp" ng-show="noyelp">No records</div>
-        </div>
-
-        <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog"
-             aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-          <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">
-              <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLongTitle">Open hours</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                  <span aria-hidden="true">&times;</span>
-                </button>
+          <div class="row">
+            <div class="dropdown">
+              <button class="btn btn-secondary dropdown-toggle" type="button" id="reviewtypebutton"
+                      data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+                      ng-model="reviewtype" ng-init="reviewtype='g'">
+                Google Reviews
+              </button>
+              <div class="dropdown-menu" aria-labelledby="reviewtypebutton">
+                <a class="dropdown-item" href="#"
+                   ng-click="reviewtype='g'; reviewtypehandler($event.target.innerText)">
+                  Google Reviews
+                </a>
+                <a class="dropdown-item" href="#"
+                   ng-click="reviewtype='y'; reviewtypehandler($event.target.innerText)">
+                  Yelp Reviews</a>
               </div>
-              <div class="modal-body">
-                <table class="table">
-                  <tr ng-repeat="data in detailsdata.opening_hours.weekday_text">
-                    <td ng-if="todayindex != $index">{{data.split(': ')[0]}}</td>
-                    <td ng-if="todayindex != $index">{{data.split(': ')[1]}}</td>
+            </div>
 
-                    <th ng-if="todayindex == $index">{{data.split(': ')[0]}}</th>
-                    <th ng-if="todayindex == $index">{{data.split(': ')[1]}}</th>
-                  </tr>
-                </table>
+            <div class="dropdown">
+              <button class="btn btn-secondary dropdown-toggle" type="button" id="revieworderbutton"
+                      data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+                      ng-model="revieworder" ng-init="revieworder='default'">
+                Default Order
+              </button>
+              <div class="dropdown-menu" aria-labelledby="revieworderbutton">
+                <a class="dropdown-item" href="#"
+                   ng-click="revieworder=''; revieworderhandler($event.target.innerText)">
+                  Default Order
+                </a>
+                <a class="dropdown-item" href="#"
+                   ng-click="revieworder='-rating'; revieworderhandler($event.target.innerText)">
+                  Highest Rating
+                </a>
+                <a class="dropdown-item" href="#"
+                   ng-click="revieworder='rating'; revieworderhandler($event.target.innerText)">
+                  Lowest Rating
+                </a>
+                <a class="dropdown-item" href="#"
+                   ng-click="revieworder='-time'; revieworderhandler($event.target.innerText)">
+                  Most Recent
+                </a>
+                <a class="dropdown-item" href="#"
+                   ng-click="revieworder='time'; revieworderhandler($event.target.innerText)">
+                  Least Recent
+                </a>
               </div>
-              <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+          </div>
+
+          <div class="alert alert-warning" ng-init="noreview=false" ng-model="noreview" ng-show="noreview">No records</div>
+
+          <div id="reviewlist" ng-if="!noreview">
+            <div class="reviewitem" ng-repeat="data in reviewsdata | orderBy:revieworder">
+              <div ng-if="reviewtype=='g'" class="portraitdiv">
+                <img class="portrait" src="{{data.profile_photo_url}}">
+              </div>
+              <div ng-if="reviewtype=='y'" class="portraitdiv">
+                <img class="portrait rounded-circle" src="{{data.profile_photo_url}}" alt="">
+              </div>
+              <div>
+                <a target="_blank" href="{{data.author_url}}">{{data.author_name}}</a><br>
+                <div class="ratings">
+                  <div class="empty-stars" style="margin: 0; width:{{data.rating / 5 * 100}}%"></div>
+                  <div class="full-stars" style="width:{{data.rating / 5 * 100}}%"></div>
+                </div>
+                &nbsp;<span class="timespan">{{data.timeformatted}}</span><br>
+                {{data.text}}
               </div>
             </div>
           </div>
         </div>
 
       </div>
-
-
 
     </div>
 
@@ -312,6 +392,7 @@
     </div>
   </div>
 </form>
+
 
 
 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
