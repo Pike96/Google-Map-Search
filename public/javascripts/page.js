@@ -1,7 +1,6 @@
 'use strict';
 
-const DOMAIN = 'http://localhost:31322';
-const API_KEY = 'AIzaSyDf2PYwxk-hPRw0ZQDIO0TamURG3zkYX38';
+const DOMAIN = 'http://mapsearchpike96.rajgs5wdu2.us-west-1.elasticbeanstalk.com';
 
 let app = angular.module('mapApp', ['ngAnimate']);
 
