@@ -5,7 +5,7 @@ const fetch = require('node-fetch');
 const yelp = require('yelp-fusion');
 const client = yelp.client('HE7DD95k5kmNeEy4pMPulBZEAOCB_rqZp1LKylA_rXH61HgmbNkkiupqjy7aYIlQBD05Mj7g6n0OHkGeTZi2_HQT9JKuVgk8lGS_1CxkPhzC4SJWo3nuAbzX-vvCWnYx');
 
-const API_KEY = "AIzaSyDf2PYwxk-hPRw0ZQDIO0TamURG3zkYX38";
+const API_KEY = "";
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
